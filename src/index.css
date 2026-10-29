@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #30363D #080A0D;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #080A0D;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #30363D;
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #484f58;
+  }
+
+  ::selection {
+    background: rgba(0, 229, 242, 0.2);
+    color: #F4F7FA;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-bg-card border border-border rounded-lg p-4;
+  }
+
+  .card-elevated {
+    @apply bg-bg-elevated border border-border rounded-lg p-4;
+  }
+
+  .btn-primary {
+    @apply bg-accent-cyan text-bg-primary font-semibold px-4 py-2 rounded-md 
+           hover:bg-accent-cyan/90 active:bg-accent-cyan/80 
+           transition-all duration-200 text-sm
+           shadow-glow-sm hover:shadow-glow-cyan;
+  }
+
+  .btn-secondary {
+    @apply border border-border text-text-secondary px-4 py-2 rounded-md 
+           hover:border-accent-cyan/50 hover:text-text-primary 
+           transition-all duration-200 text-sm bg-transparent;
+  }
+
+  .btn-danger {
+    @apply bg-status-danger/10 text-status-danger border border-status-danger/30 
+           px-4 py-2 rounded-md hover:bg-status-danger/20 
+           transition-all duration-200 text-sm;
+  }
+
+  .input-field {
+    @apply w-full bg-bg-elevated border border-border rounded-md px-3 py-2 
+           text-text-primary text-sm placeholder:text-text-secondary/50
+           focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/20
+           transition-all duration-200;
+  }
+
+  .select-field {
+    @apply w-full bg-bg-elevated border border-border rounded-md px-3 py-2 
+           text-text-primary text-sm appearance-none cursor-pointer
+           focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/20
+           transition-all duration-200;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium;
+  }
+
+  .badge-cyan {
+    @apply badge bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/30;
+  }
+
+  .badge-teal {
+    @apply badge bg-accent-teal/10 text-accent-teal border border-accent-teal/30;
+  }
+
+  .badge-success {
+    @apply badge bg-status-success/10 text-status-success border border-status-success/30;
+  }
+
+  .badge-warning {
+    @apply badge bg-status-warning/10 text-status-warning border border-status-warning/30;
+  }
+
+  .badge-danger {
+    @apply badge bg-status-danger/10 text-status-danger border border-status-danger/30;
+  }
+
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table th {
+    @apply text-left text-text-secondary font-mono text-xs uppercase tracking-wider 
+           py-2.5 px-3 border-b border-border bg-bg-elevated/50;
+  }
+
+  .data-table td {
+    @apply py-2.5 px-3 border-b border-border/50;
+  }
+
+  .data-table tr:hover td {
+    @apply bg-bg-elevated/30;
+  }
+
+  .section-label {
+    @apply font-mono text-xs uppercase tracking-wider text-text-secondary;
+  }
+
+  .glow-border {
+    @apply border border-accent-cyan/30 shadow-glow-sm;
+  }
+
+  .kpi-card {
+    @apply card relative overflow-hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-accent-cyan/50 to-transparent;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-secondary
+           hover:bg-bg-elevated hover:text-text-primary transition-all duration-200 cursor-pointer;
+  }
+
+  .sidebar-link.active {
+    @apply bg-accent-cyan/10 text-accent-cyan border-l-2 border-accent-cyan;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply bg-bg-card border border-border rounded-lg shadow-2xl w-full max-w-lg animate-slide-up;
+  }
+
+  .tooltip {
+    @apply bg-bg-elevated border border-border rounded-md px-3 py-2 text-sm shadow-lg;
+  }
+}
+
+@layer utilities {
+  .text-gradient-cyan {
+    @apply bg-gradient-to-r from-accent-cyan to-accent-teal bg-clip-text text-transparent;
+  }
+
+  .animate-in {
+    @apply animate-fade-in;
+  }
+}
