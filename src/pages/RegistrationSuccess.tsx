@@ -7,8 +7,16 @@ export default function RegistrationSuccess() {
   const { registrations, activeReferralCode } = useStore();
   const [copied, setCopied] = useState(false);
 
+  const productionRegistration = (() => {
+    try {
+      return JSON.parse(sessionStorage.getItem('ai-launchpad-last-registration') ?? 'null') as { fullName: string; email: string } | null;
+    } catch {
+      return null;
+    }
+  })();
+
   // The most recent registration is the user's
-  const latestReg = registrations[0];
+  const latestReg = productionRegistration ?? registrations[0];
   const baseUrl = window.location.origin;
   const referralLink = activeReferralCode ? `${baseUrl}/?ref=${activeReferralCode}` : baseUrl;
 

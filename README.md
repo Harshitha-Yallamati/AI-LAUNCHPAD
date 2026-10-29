@@ -21,11 +21,20 @@ Open `http://localhost:5173`. Build with `npm run build`.
 
 ## Data and security
 
-This repository currently runs only in clearly labelled demo mode using browser local storage. It has no Supabase project, credentials, server, or production administrator authentication. Do not use the demo store for real student personal data. A production deployment requires Supabase Auth, database migrations, RLS policies, and server-side registration validation/deduplication.
+Demo mode uses browser local storage. Production registration is available when Demo Mode is disabled and Supabase is configured. Do not use the current dashboard, registrations list, or admin controls for real student data yet: production administrator authentication and server-backed dashboard queries still need to be connected.
 
 ## Environment variables
 
-None are required for demo mode. A future Supabase integration should use only public client configuration in `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`; never expose a service-role key in the browser.
+Demo mode needs no environment variables. For Supabase registration, copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. Never expose a service-role key in the browser.
+
+## Supabase activation
+
+1. In the Supabase SQL Editor, run `supabase/migrations/20261029_initial_growth_engine.sql` once.
+2. Create an administrator with Supabase Auth, then insert its `auth.users.id` into `public.profiles` with `is_admin = true`.
+3. In Render, add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as build-time environment variables, then redeploy.
+4. Disable Demo Mode before accepting production registrations. The public registration form then uses the `register_workshop` RPC, which normalizes email, blocks duplicates through a database constraint, validates active referral codes, and does not grant browser users read access to registration records.
+
+The migration enables RLS and exposes only two anonymous RPCs: referral-code validation and registration creation. It does not expose `registrations` through table select policies.
 
 ## Verification
 

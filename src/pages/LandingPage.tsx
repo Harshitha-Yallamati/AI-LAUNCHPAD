@@ -8,6 +8,7 @@ import { useStore } from '../lib/store';
 import { registrationSchema } from '../lib/validation';
 import { normalizeEmail, AcquisitionChannel } from '../types';
 import { showToast } from '../components/ui';
+import { isSupabaseConfigured, registerWorkshop, validateReferralCode } from '../lib/supabase';
 
 const FAQ_ITEMS = [
   {
@@ -35,7 +36,7 @@ const FAQ_ITEMS = [
 export default function LandingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { addRegistration, isDuplicateEmail, setActiveReferralCode, activeReferralCode, getAmbassadorByCode, settings } = useStore();
+  const { addRegistration, setActiveReferralCode, activeReferralCode, getAmbassadorByCode, settings, isDemoMode } = useStore();
 
   const [form, setForm] = useState({
     fullName: '',
@@ -52,12 +53,16 @@ export default function LandingPage() {
   useEffect(() => {
     const ref = searchParams.get('ref');
     if (ref && !activeReferralCode) {
-      const ambassador = getAmbassadorByCode(ref);
-      if (ambassador && ambassador.isActive) {
-        setActiveReferralCode(ref);
+      if (!isDemoMode && isSupabaseConfigured) {
+        void validateReferralCode(ref).then((isActive) => {
+          if (isActive) setActiveReferralCode(ref);
+        });
+      } else {
+        const ambassador = getAmbassadorByCode(ref);
+        if (ambassador && ambassador.isActive) setActiveReferralCode(ref);
       }
     }
-  }, [searchParams, activeReferralCode, getAmbassadorByCode, setActiveReferralCode]);
+  }, [searchParams, activeReferralCode, getAmbassadorByCode, setActiveReferralCode, isDemoMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +98,7 @@ export default function LandingPage() {
     // Simulate network delay
     await new Promise((r) => setTimeout(r, 800));
 
-    const regResult = addRegistration({
+    const registrationInput = {
       fullName: form.fullName,
       email: normalizeEmail(form.email),
       college: form.college,
@@ -105,7 +110,14 @@ export default function LandingPage() {
       utmSource: utmSource,
       utmMedium: utmMedium,
       utmCampaign: searchParams.get('utm_campaign'),
-    });
+    };
+
+    const regResult = !isDemoMode && isSupabaseConfigured
+      ? await registerWorkshop(registrationInput).then((result) => {
+          if (result.success) sessionStorage.setItem('ai-launchpad-last-registration', JSON.stringify({ fullName: form.fullName, email: normalizeEmail(form.email) }));
+          return result;
+        })
+      : addRegistration(registrationInput);
 
     setLoading(false);
 
